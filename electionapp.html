@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>School Election Polling App</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#1e293b,#0f172a);
+    min-height:100vh;
+    color:white;
+}
+
+.container{
+    width:95%;
+    max-width:1200px;
+    margin:auto;
+    padding:20px;
+}
+
+.card{
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(10px);
+    border-radius:20px;
+    padding:25px;
+    margin-top:20px;
+    box-shadow:0 0 20px rgba(0,0,0,0.3);
+}
+
+h1,h2,h3{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+input,select,button{
+    width:100%;
+    padding:12px;
+    margin-top:12px;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+}
+
+button{
+    background:#2563eb;
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+    font-weight:bold;
+}
+
+button:hover{
+    background:#1d4ed8;
+}
+
+.hidden{
+    display:none;
+}
+
+.position{
+    margin-top:30px;
+    padding:20px;
+    border-radius:15px;
+    background:rgba(255,255,255,0.05);
+}
+
+.candidates{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:15px;
+    margin-top:15px;
+}
+
+.candidate{
+    background:white;
+    color:black;
+    padding:15px;
+    border-radius:15px;
+    text-align:center;
+}
+
+.candidate input{
+    width:auto;
+}
+
+.house-box{
+    padding:15px;
+    border-radius:15px;
+    color:white;
+    font-weight:bold;
+    text-align:center;
+}
+
+.green{background:green;}
+.blue{background:blue;}
+.yellow{background:gold;color:black;}
+.red{background:red;}
+
+.results{
+    margin-top:20px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+th,td{
+    border:1px solid white;
+    padding:10px;
+    text-align:center;
+}
+
+th{
+    background:#1e40af;
+}
+
+.logout{
+    background:red;
+}
+
+.logout:hover{
+    background:darkred;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- LOGIN PAGE -->
+<div class="card" id="loginPage">
+    <h1>🏫 School Election Polling App</h1>
+
+    <input type="text" id="studentName" placeholder="Enter Student Name">
+
+    <select id="houseSelect">
+        <option value="">Select Your House</option>
+        <option value="Chera">Chera House (Green)</option>
+        <option value="Chola">Chola House (Blue)</option>
+        <option value="Pandya">Pandya House (Yellow)</option>
+        <option value="Pallava">Pallava House (Red)</option>
+    </select>
+
+    <button onclick="startVoting()">Enter Voting Booth</button>
+
+    <button onclick="showAdminLogin()">Admin Access</button>
+</div>
+
+<!-- ADMIN LOGIN -->
+<div class="card hidden" id="adminLogin">
+    <h2>🔐 Admin Login</h2>
+
+    <input type="password" id="adminPassword" placeholder="Enter Admin Password">
+
+    <button onclick="adminLogin()">Login</button>
+
+    <button class="logout" onclick="backToHome()">Back</button>
+</div>
+
+<!-- VOTING PAGE -->
+<div class="card hidden" id="votingPage">
+    <h1>🗳 Election Voting</h1>
+
+    <div id="houseColor"></div>
+
+    <!-- SPL -->
+    <div class="position">
+        <h2>School Pupil Leader (Boys)</h2>
+
+        <div class="candidates">
+            <label class="candidate">
+                <input type="radio" name="splboys" value="Arun"> Arun
+            </label>
+
+            <label class="candidate">
+                <input type="radio" name="splboys" value="Kavin"> Kavin
+            </label>
+        </div>
+    </div>
+
+    <div class="position">
+        <h2>School Pupil Leader (Girls)</h2>
+
+        <div class="candidates">
+            <label class="candidate">
+                <input type="radio" name="splgirls" value="Priya"> Priya
+            </label>
+
+            <label class="candidate">
+                <input type="radio" name="splgirls" value="Nila"> Nila
+            </label>
+        </div>
+    </div>
+
+    <!-- ASSISTANT SPL -->
+    <div class="position">
+        <h2>Assistant School Pupil Leader (Boys)</h2>
+
+        <div class="candidates">
+            <label class="candidate">
+                <input type="radio" name="assboys" value="Vishal"> Vishal
+            </label>
+
+            <label class="candidate">
+                <input type="radio" name="assboys" value="Ragul"> Ragul
+            </label>
+        </div>
+    </div>
+
+    <div class="position">
+        <h2>Assistant School Pupil Leader (Girls)</h2>
+
+        <div class="candidates">
+            <label class="candidate">
+                <input type="radio" name="assgirls" value="Anu"> Anu
+            </label>
+
+            <label class="candidate">
+                <input type="radio" name="assgirls" value="Keerthi"> Keerthi
+            </label>
+        </div>
+    </div>
+
+    <!-- SPORTS -->
+    <div class="position">
+        <h2>Sports Secretary (Boys)</h2>
+
+        <div class="candidates">
+            <label class="candidate">
+                <input type="radio" name="sportsboys" value="Harish"> Harish
+            </label>
+
+            <label class="candidate">
+                <input type="radio" name="sportsboys" value="Ajay"> Ajay
+            </label>
+        </div>
+    </div>
+
+    <div class="position">
+        <h2>Sports Secretary (Girls)</h2>
+
+        <div class="candidates">
+            <label class="candidate">
+                <input type="radio" name="sportsgirls" value="Mithra"> Mithra
+            </label>
+
+            <label class="candidate">
+                <input type="radio" name="sportsgirls" value="Divya"> Divya
+            </label>
+        </div>
+    </div>
+
+    <!-- HOUSE CAPTAIN -->
+    <div class="position">
+        <h2 id="houseCaptainTitle"></h2>
+
+        <div class="candidates" id="houseCaptainCandidates"></div>
+    </div>
+
+    <button onclick="submitVote()">Submit Vote</button>
+</div>
+
+<!-- ADMIN PAGE -->
+<div class="card hidden" id="adminPage">
+    <h1>📊 Election Results Dashboard</h1>
+
+    <div class="results" id="resultsArea"></div>
+
+    <button class="logout" onclick="logoutAdmin()">Logout</button>
+</div>
+
+</div>
+
+<!-- REPLACE YOUR ENTIRE <script> SECTION WITH THIS -->
+
+<script>
+
+let currentHouse = "";
+
+let electionData = JSON.parse(localStorage.getItem("electionData")) || {
+    posts: [
+        {
+            title:"School Pupil Leader (Boys)",
+            key:"splboys",
+            candidates:["Arun","Kavin"]
+        },
+        {
+            title:"School Pupil Leader (Girls)",
+            key:"splgirls",
+            candidates:["Priya","Nila"]
+        },
+        {
+            title:"Assistant School Pupil Leader (Boys)",
+            key:"assboys",
+            candidates:["Vishal","Ragul"]
+        },
+        {
+            title:"Assistant School Pupil Leader (Girls)",
+            key:"assgirls",
+            candidates:["Anu","Keerthi"]
+        },
+        {
+            title:"Sports Secretary (Boys)",
+            key:"sportsboys",
+            candidates:["Harish","Ajay"]
+        },
+        {
+            title:"Sports Secretary (Girls)",
+            key:"sportsgirls",
+            candidates:["Mithra","Divya"]
+        }
+    ],
+
+    houseCaptains:{
+        Chera:{
+            boys:["Chera Boy 1","Chera Boy 2"],
+            girls:["Chera Girl 1","Chera Girl 2"]
+        },
+
+        Chola:{
+            boys:["Chola Boy 1","Chola Boy 2"],
+            girls:["Chola Girl 1","Chola Girl 2"]
+        },
+
+        Pandya:{
+            boys:["Pandya Boy 1","Pandya Boy 2"],
+            girls:["Pandya Girl 1","Pandya Girl 2"]
+        },
+
+        Pallava:{
+            boys:["Pallava Boy 1","Pallava Boy 2"],
+            girls:["Pallava Girl 1","Pallava Girl 2"]
+        }
+    }
+};
+
+let results = JSON.parse(localStorage.getItem("results")) || {};
+
+function saveElectionData(){
+    localStorage.setItem("electionData",JSON.stringify(electionData));
+}
+
+function startVoting(){
+
+    const student = document.getElementById("studentName").value;
+    const house = document.getElementById("houseSelect").value;
+
+    if(student === "" || house === ""){
+        alert("Please fill all details");
+        return;
+    }
+
+    currentHouse = house;
+
+    document.getElementById("loginPage").classList.add("hidden");
+    document.getElementById("votingPage").classList.remove("hidden");
+
+    showHouseTheme(house);
+
+    renderVotingPosts(house);
+}
+
+function showHouseTheme(house){
+
+    let div = document.getElementById("houseColor");
+
+    if(house==="Chera"){
+        div.innerHTML='<div class="house-box green">Chera House Voting Booth</div>';
+    }
+
+    if(house==="Chola"){
+        div.innerHTML='<div class="house-box blue">Chola House Voting Booth</div>';
+    }
+
+    if(house==="Pandya"){
+        div.innerHTML='<div class="house-box yellow">Pandya House Voting Booth</div>';
+    }
+
+    if(house==="Pallava"){
+        div.innerHTML='<div class="house-box red">Pallava House Voting Booth</div>';
+    }
+}
+
+function renderVotingPosts(house){
+
+    let votingPage = document.getElementById("votingPage");
+
+    votingPage.innerHTML = `
+        <h1>🗳 Election Voting</h1>
+        <div id="houseColor"></div>
+        <div id="dynamicPosts"></div>
+        <button onclick="submitVote()">Submit Vote</button>
+    `;
+
+    showHouseTheme(house);
+
+    let postsHTML = "";
+
+    electionData.posts.forEach(post=>{
+
+        postsHTML += `
+        <div class="position">
+            <h2>${post.title}</h2>
+
+            <div class="candidates">
+        `;
+
+        post.candidates.forEach(candidate=>{
+
+            postsHTML += `
+            <label class="candidate">
+                <input type="radio" name="${post.key}" value="${candidate}">
+                ${candidate}
+            </label>
+            `;
+        });
+
+        postsHTML += `
+            </div>
+        </div>
+        `;
+    });
+
+    let houseData = electionData.houseCaptains[house];
+
+    postsHTML += `
+    <div class="position">
+        <h2>${house} House Captain (Boys)</h2>
+
+        <div class="candidates">
+    `;
+
+    houseData.boys.forEach(candidate=>{
+
+        postsHTML += `
+        <label class="candidate">
+            <input type="radio" name="houseboys" value="${candidate}">
+            ${candidate}
+        </label>
+        `;
+    });
+
+    postsHTML += `</div></div>`;
+
+    postsHTML += `
+    <div class="position">
+        <h2>${house} House Captain (Girls)</h2>
+
+        <div class="candidates">
+    `;
+
+    houseData.girls.forEach(candidate=>{
+
+        postsHTML += `
+        <label class="candidate">
+            <input type="radio" name="housegirls" value="${candidate}">
+            ${candidate}
+        </label>
+        `;
+    });
+
+    postsHTML += `</div></div>`;
+
+    document.getElementById("dynamicPosts").innerHTML = postsHTML;
+}
+
+function countVote(position,name){
+
+    if(!results[position]){
+        results[position] = {};
+    }
+
+    if(!results[position][name]){
+        results[position][name] = 0;
+    }
+
+    results[position][name]++;
+}
+
+function submitVote(){
+
+    electionData.posts.forEach(post=>{
+
+        const selected =
+        document.querySelector(`input[name="${post.key}"]:checked`);
+
+        if(selected){
+            countVote(post.title,selected.value);
+        }
+    });
+
+    const houseBoy =
+    document.querySelector(`input[name="houseboys"]:checked`);
+
+    if(houseBoy){
+        countVote(currentHouse + " House Captain Boys",houseBoy.value);
+    }
+
+    const houseGirl =
+    document.querySelector(`input[name="housegirls"]:checked`);
+
+    if(houseGirl){
+        countVote(currentHouse + " House Captain Girls",houseGirl.value);
+    }
+
+    localStorage.setItem("results",JSON.stringify(results));
+
+    alert("Vote Submitted Successfully!");
+
+    location.reload();
+}
+
+function showAdminLogin(){
+
+    document.getElementById("loginPage").classList.add("hidden");
+    document.getElementById("adminLogin").classList.remove("hidden");
+}
+
+function adminLogin(){
+
+    const pass = document.getElementById("adminPassword").value;
+
+    if(pass === "admin123"){
+
+        document.getElementById("adminLogin").classList.add("hidden");
+        document.getElementById("adminPage").classList.remove("hidden");
+
+        loadAdminPage();
+
+    }else{
+        alert("Wrong Password");
+    }
+}
+
+function loadAdminPage(){
+
+    let html = `
+
+    <h2>➕ Add New Post</h2>
+
+    <input type="text" id="newPostTitle" placeholder="Post Title">
+
+    <input type="text" id="newPostKey" placeholder="Post Key (unique)">
+
+    <button onclick="addPost()">Add Post</button>
+
+    <hr style="margin:20px 0;">
+
+    <h2>👥 Add Candidate</h2>
+
+    <select id="candidatePost">
+    `;
+
+    electionData.posts.forEach(post=>{
+
+        html += `
+        <option value="${post.key}">
+            ${post.title}
+        </option>
+        `;
+    });
+
+    html += `
+    </select>
+
+    <input type="text" id="candidateName"
+    placeholder="Candidate Name">
+
+    <button onclick="addCandidate()">Add Candidate</button>
+
+    <hr style="margin:20px 0;">
+
+    <h2>❌ Remove Candidate</h2>
+    `;
+
+    electionData.posts.forEach(post=>{
+
+        html += `
+        <div class="position">
+            <h3>${post.title}</h3>
+        `;
+
+        post.candidates.forEach(candidate=>{
+
+            html += `
+            <div style="display:flex;gap:10px;margin-top:10px;">
+                <input value="${candidate}" readonly>
+
+                <button onclick="removeCandidate('${post.key}','${candidate}')">
+                    Remove
+                </button>
+            </div>
+            `;
+        });
+
+        html += `</div>`;
+    });
+
+    html += `
+    <hr style="margin:20px 0;">
+
+    <h2>📊 Results</h2>
+
+    <table>
+    <tr>
+    <th>Post</th>
+    <th>Candidate</th>
+    <th>Votes</th>
+    </tr>
+    `;
+
+    for(let position in results){
+
+        for(let candidate in results[position]){
+
+            html += `
+            <tr>
+                <td>${position}</td>
+                <td>${candidate}</td>
+                <td>${results[position][candidate]}</td>
+            </tr>
+            `;
+        }
+    }
+
+    html += `
+    </table>
+
+    <br>
+
+    <button onclick="resetElection()"
+    style="background:red;">
+        Reset Election
+    </button>
+
+    <button class="logout" onclick="logoutAdmin()">
+        Logout
+    </button>
+    `;
+
+    document.getElementById("adminPage").innerHTML = html;
+}
+
+function addPost(){
+
+    const title =
+    document.getElementById("newPostTitle").value;
+
+    const key =
+    document.getElementById("newPostKey").value;
+
+    if(title==="" || key===""){
+        alert("Fill all fields");
+        return;
+    }
+
+    electionData.posts.push({
+        title:title,
+        key:key,
+        candidates:[]
+    });
+
+    saveElectionData();
+
+    loadAdminPage();
+}
+
+function addCandidate(){
+
+    const postKey =
+    document.getElementById("candidatePost").value;
+
+    const candidateName =
+    document.getElementById("candidateName").value;
+
+    if(candidateName===""){
+        alert("Enter candidate name");
+        return;
+    }
+
+    let post =
+    electionData.posts.find(p=>p.key===postKey);
+
+    post.candidates.push(candidateName);
+
+    saveElectionData();
+
+    loadAdminPage();
+}
+
+function removeCandidate(postKey,candidateName){
+
+    let post =
+    electionData.posts.find(p=>p.key===postKey);
+
+    post.candidates =
+    post.candidates.filter(c=>c!==candidateName);
+
+    saveElectionData();
+
+    loadAdminPage();
+}
+
+function resetElection(){
+
+    if(confirm("Reset all votes?")){
+
+        localStorage.removeItem("results");
+
+        results = {};
+
+        alert("Election Reset Successfully");
+
+        loadAdminPage();
+    }
+}
+
+function logoutAdmin(){
+
+    location.reload();
+}
+
+function backToHome(){
+
+    document.getElementById("adminLogin").classList.add("hidden");
+
+    document.getElementById("loginPage").classList.remove("hidden");
+}
+
+</script>
+</body>
+</html>
